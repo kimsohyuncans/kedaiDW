@@ -1,13 +1,17 @@
 import { createStackNavigator,createAppContainer } from 'react-navigation'
-import WelcomePage from './../screens/welcome'
-import GoodbyePage from './../screens/goodbye'
+
+import FindMyTable from '../screens/FindMyTable'
+import SelectFood from '../screens/SelectFood'
 
 const MainNavigator = createStackNavigator({
-    welcome : {
-        screen : WelcomePage
+    selectfood : {
+        screen : SelectFood
     },
-    goodbye : {
-        screen : GoodbyePage
+    
+},{
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false,
     }
 })
 
