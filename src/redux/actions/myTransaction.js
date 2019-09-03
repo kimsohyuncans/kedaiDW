@@ -12,3 +12,19 @@ export const sendTableNumber = (value) => ({
         table_number : value
     })
 })
+
+export const subTotal = (data) => ({
+    
+    type : 'subTotal',
+    
+    subtotal : data,
+    discount : Math.floor(Math.random() * 5),
+    service_charge : Math.floor(Math.random() * 20),
+    tax : 7.50,
+    
+})
+
+export const completeMyTf = (data) => ({
+    type: 'completeMyTf',
+    payload : axios.patch("http://localhost:8080/api/v1/complete_transaction",data)
+})

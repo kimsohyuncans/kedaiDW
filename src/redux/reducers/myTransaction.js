@@ -4,11 +4,11 @@ const initialState = {
     id : null,
     table_number : null,
     finished_time : null,
-    subtotal : null,
-    discount : null,
-    service_charge : null,
-    tax : null,
-    total : null,
+    subtotal : 0,
+    discount :0,
+    service_charge :0,
+    tax :0,
+    total :0,
     is_paid : null,
     isError : false,
     isLoading : false,
@@ -42,6 +42,27 @@ export default function transaction(state = initialState,action){
                 isLoading : false,
                 msg : "server error",
                 isError : true
+            }
+        case "subTotal":
+            return {
+                ...state,
+                subtotal : action.subtotal,
+                discount : action.discount,
+                service_charge : action.service_charge,
+                tax :action.tax,
+                total : (action.subtotal - action.discount) + (action.service_charge + action.tax)
+            }
+        case "completeMyTf_FULFILLED":
+            return{
+                ...state,
+                is_paid: true,
+                msg : action.payload.data
+            }
+        case "completeMyTf_REJECTED":
+            return {
+                ...state,
+                is_paid : false,
+                msg : action.payload.data
             }
         default :
             return state

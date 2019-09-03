@@ -23,7 +23,7 @@ class WelcomePage extends Component {
                     // onPress={() => this.props.getId_transactions(this.state.table_number)}
                     onPress={() => {
                         this.props.getId_transactions(this.state.table_number)
-                        this.props.navigation.navigate('selectfood')
+                        this.props.navigation.navigate('SelectFood')
                         
                     }}
                     >
