@@ -4,7 +4,6 @@ import FindMyTable from '../screens/FindMyTable'
 import SelectFood from '../screens/SelectFood'
 import ViewBill from '../screens/ViewBill'
 import Is_Paid from '../screens/Is_Paid'
-
 const MainNavigator = createStackNavigator({
     FindMyTable,
     SelectFood,

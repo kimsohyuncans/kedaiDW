@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, FlatList, Text, Alert,Modal} from 'react-native';
-import {Spinner, Content, Footer, List, ListItem, Container} from 'native-base';
+import {View, FlatList, Text, Alert,Modal,ScrollView,Button} from 'react-native';
+import {Spinner, Content, Footer, List, ListItem, Container,Tab, Tabs, ScrollableTab,Left,Body,Right,Thumbnail} from 'native-base';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import * as getMenuActions from '../redux/actions/getlistmenu';
 import * as orderActions from '../redux/actions/getlistorder';
@@ -11,7 +11,7 @@ class SelectFood extends Component {
     super(props);
     this.state = {
       orders: new Array(),
-      renderNow: false,
+      modalVisible: false,
     };
     this.choose = this.choose.bind(this);
     this.confirm = this.confirm.bind(this);
@@ -58,8 +58,6 @@ class SelectFood extends Component {
           });
     }
    
-    // console.log(this.state.orders[0])
-    
     console.log(this.state.orders)
     
   }
@@ -68,11 +66,13 @@ class SelectFood extends Component {
     Alert.alert('Confirm order', 'are you sure to order this', [
       {
         text: 'yes',
-        onPress: () => {
+        onPress: async () => {
          
-        this.props.sendOrder(this.state.orders);
-           
-
+          await this.props.sendOrder(this.state.orders)
+          this.setState({
+            orders : []
+          })
+          alert('your order confirmed, please check bill to see your details order')
         },
       },
       {
@@ -83,9 +83,22 @@ class SelectFood extends Component {
   }
 
   cancel(i) {
+    tmpOrder = this.state.orders.filter((item,ii) => {
+      if(i == ii){
+        item.qyt = item.qyt - 1
+        if(item.qyt > 0){
+          return item  
+        }
+        
+      }else{
+        return item
+      }
+    })
+
     this.setState({
-      orders: this.state.orders.filter((item, j) => i !== j),
-    });
+      orders : tmpOrder
+    })
+    console.log(tmpOrder)
   }
   ready() {
     data = false;
@@ -94,7 +107,13 @@ class SelectFood extends Component {
   }
 
 
-
+  setModalVisible() {
+    this.setState({modalVisible: true});
+  }
+  
+  closeModal(){
+    this.setState({modalVisible : false})
+  }
 
   render() {
 
@@ -104,60 +123,144 @@ class SelectFood extends Component {
       return (
         <Container>
           <Content>
-            <List>
-              <FlatList
-                data={this.props.listmenu.data}
-                renderItem={({item}) => (
-                  <View>
-                    <ListItem itemDivider key={item.id}>
-                      <Text>{item.name}</Text>
-                    </ListItem>
-                    <FlatList
-                      data={item.menus}
-                      renderItem={({item}) => (
-                        <TouchableOpacity
-                          key={item.id}
-                          onPress={() => this.choose(item, this.props.transaction.id)}>
-                          <ListItem>
-                            <Text>{item.name}</Text>
-                          </ListItem>
-                        </TouchableOpacity>
-                      )}
-                    />
+            <Tabs>
+              {this.props.listmenu.data.map((item,i) => (
+                <Tab heading={item.name} key={i} tabStyle={{backgroundColor:'#0275d8'}} activeTabStyle={{backgroundColor:'#0275d8'}} style={{flex:1}}>
+                  <View style={{flex:1,backgroundColor:'white'}}>
+                    <ScrollView>
+                      <List>
+                        <FlatList
+                        data={item.menus}
+                        extraData={this.props.listmenu}
+                        renderItem={ ({item}) => (
+
+                          <TouchableOpacity style={{borderWidth:2,borderColor:'#e0e0e0',height:70,width:'100%',marginBottom:10}} onPress={() => this.choose(item,this.props.transaction.id)}>
+
+                            <ListItem thumbnail>
+                              <Left>
+                                <Thumbnail square source={require('../assets/img/food.png')} style={{width:80,height:80}}/>
+                              </Left>
+                              <Body>
+                                <Text>{item.name}</Text>
+                                <Text note numberOfLines={1}>{item.price}</Text>
+                              </Body>
+                              <Right>
+                                
+                                  <Text>View</Text>
+                                
+                              </Right>
+                            </ListItem>
+                          </TouchableOpacity>
+                            
+                        
+                        )}/>
+                      </List>
+                      
+
+
+                      
+
+                      </ScrollView>
                   </View>
-                )}
-              />
-            </List>
+                </Tab>
+              ))}
+            </Tabs>
+
+            
             
             
           </Content>
-          <Footer style={{height: 200, flexDirection: 'row'}}>
-            <View style={{width: '80%', backgroundColor: 'pink'}}>
+          <Footer style={{height: 200, flexDirection: 'row',backgroundColor:'white'}}>
+            <View style={{width: '70%',backgroundColor:'#292b2c'}}>
+                <Text style={{color:'white',marginLeft:'35%'}}>Order List table {/*this.props.transaction.table_number8*/}</Text>
+              
               <FlatList
+                style={{marginTop:10}}
                 extraData={this.state}
                 data={this.state.orders}
                 renderItem={({item, index}) => (
-                  <TouchableOpacity onPress={() => this.cancel(index)}>
-                    <Text>{item.name} x{item.qyt} = {item.price}</Text>
+                  <TouchableOpacity onPress={() => this.cancel(index)} style={{borderBottomColor:'gray',borderBottomWidth:1}}>
+                    <Text style={{color:'white',marginLeft:15}}>{item.name} x{item.qyt} = {item.price.toFixed(2)}</Text>
                   </TouchableOpacity>
                 )}
               />
+              
             </View>
-            <View style={{width: '20%', backgroundColor: 'blue'}}>
+
+
+
+            <View style={{width: '25%',marginLeft:10}}>
               <TouchableOpacity
-                style={{height: 60, backgroundColor: 'yellow'}}
+                style={{height: 65,borderRadius:10, backgroundColor:'#0baa56',justifyContent:'center',alignItems:'center'}}
                 onPress={() => this.confirm()}>
-                <Text>confirm</Text>
+                <Text style={{color:'white',fontSize:15}}>confirm</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{height: 60, backgroundColor: 'red'}}>
-                <Text>call</Text>
+              <TouchableOpacity style={{height: 65,borderRadius:10, backgroundColor: '#d9534f',justifyContent:'center',alignItems:'center',marginTop:5}}>
+                <Text style={{color:'white',fontSize:15}}>call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{height: 60, backgroundColor: 'green'}}
-              onPress={() => this.props.navigation.navigate('ViewBill')}>
-                <Text>view bill</Text>
+              <TouchableOpacity style={{height: 65,borderRadius:10, backgroundColor: '#0275d8',justifyContent:'center',alignItems:'center',marginTop:5}}
+              onPress={() => this.setModalVisible()}>
+                <Text style={{color:'white',fontSize:15}}>view bill</Text>
               </TouchableOpacity>
             </View>
           </Footer>
+
+          <View>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                onRequestClose={() => {
+                  Alert.alert('Modal has been closed.');
+                }}>
+                
+                <View style={{marginTop: '20%',borderWidth:0.5,borderColor:'gray',width:'80%',height:'60%',alignSelf:'center',backgroundColor:'white'}}>
+                 
+                 {/* Header Modal */}
+                  <View style={{flexDirection:'row',height:50,borderBottomColor:'gray',borderBottomWidth:1}}>
+                    <View style={{width:'70%',justifyContent:'center'}}>
+                      <Text style={{fontSize:25,marginLeft:10}}>Billing</Text>
+                    </View>
+
+                    <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                      <Button
+                      title='anjau'
+                      style={{height:50,width:50}}
+                        onPress={() => {
+                          this.closeModal()
+                      }}>
+                      </Button>
+
+                  </View>
+                  
+                  {/* Bodey Modal */}
+                  <List style={{backgroundColor:'pink'}}>
+                  <ListItem selected>
+                    <Left>
+                      <Text>Simon Mignolet</Text>
+                    </Left>
+                    <Right>
+                      <Text>234</Text>
+                    </Right>
+                  </ListItem>
+                  <ListItem>
+                  <Left>
+                      <Text>Nathaniel Clyne</Text>
+                    </Left>
+                    <Right>
+                      <Text>34</Text>
+                    </Right>
+                  </ListItem>
+                  </List>
+                      
+
+                   
+                  </View>
+
+
+                </View>
+              </Modal>
+            </View>
         </Container>
       );
     } else {

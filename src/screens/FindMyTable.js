@@ -12,17 +12,16 @@ class WelcomePage extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.form}>
-                    <Text>Masukkan Nomor Meja</Text>
+                    <Text style={{fontSize: 25,color:'white'}}>Masukkan Nomor Meja</Text>
                     <TextInput
                     style={styles.input}
                     keyboardType={'numeric'}
                     onChangeText={(e) => this.setState({table_number:e})}/>
 
-                    <TouchableOpacity style={styles.input}
+                    <TouchableOpacity style={{width:30,backgroundColor:'white',marginTop:10,backgroundColor:"#BAB1AC",width:'60%',height:35,borderRadius:15,alignItems:'center'}}
                     // onPress={() => this.props.getId_transactions(this.state.table_number)}
                     onPress={() => {
-                        this.props.getId_transactions(this.state.table_number)
+                        // this.props.getId_transactions(this.state.table_number)
                         this.props.navigation.navigate('SelectFood')
                         
                     }}
@@ -30,7 +29,7 @@ class WelcomePage extends Component {
                         <Text>submit</Text>
                     </TouchableOpacity>
 
-                </View>
+                
             </View>
                  
         )
@@ -54,7 +53,8 @@ const styles = StyleSheet.create({
     container : {
         flex:1,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        backgroundColor: '#0660CF'
     },
     form : {
         borderWidth:3,
@@ -65,9 +65,12 @@ const styles = StyleSheet.create({
         height:'80%'
     },
     input : {
-        width : '50%',
-        borderWidth:2,
-        marginTop:'10%'
+        width : '60%',
+        marginTop:'10%',
+        height:20,
+        backgroundColor:'#2D4272',
+        borderRadius:15,
+        color:'white'
     }
 
 })

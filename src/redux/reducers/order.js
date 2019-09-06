@@ -54,7 +54,7 @@ export default function listorder(state = initialState,action){
         case "changeStatus_REJECTED":
             return{
                 
-                data : action.payload.data,
+                data : action.payload,
                 msg : 'ERROR BGST',
                 isLoading : false,
                 isError : false,

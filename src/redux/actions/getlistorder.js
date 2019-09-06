@@ -15,7 +15,7 @@ export const sendOrder = (data,id) => ({
 export const changeStatus = (data) => ({
     type : 'changeStatus',
     payload : axios.patch("http://localhost:8080/api/v1/status",{
-        status : 1,
-        transaction_id : 5
+        transaction_id : toString(),
+        status : "1",
     })
 })

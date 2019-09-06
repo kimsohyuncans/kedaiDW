@@ -50,7 +50,7 @@ export default function transaction(state = initialState,action){
                 discount : action.discount,
                 service_charge : action.service_charge,
                 tax :action.tax,
-                total : (action.subtotal - action.discount) + (action.service_charge + action.tax)
+                total : action.subtotal - action.discount + action.service_charge + action.tax
             }
         case "completeMyTf_FULFILLED":
             return{

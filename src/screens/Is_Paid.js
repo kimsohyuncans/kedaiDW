@@ -12,7 +12,7 @@ class IsPaid extends Component{
       return(
         <View style={{flex:1,backgroundColor: '#000000',justifyContent: 'center',alignContent: 'center',alignItems: 'center',}}>
           <Text style={{color:'white',fontSize:25,textAlign:'center'}}>Please bring the device to the cashier</Text>
-          <Text style={{color:'white',fontSize:25,marginTop:20,}}>${this.props.transaction.total}</Text>
+          <Text style={{color:'white',fontSize:25,marginTop:20,}}>#{this.props.transaction.table_number}</Text>
           <Text style={{color:'white',fontSize:25,marginTop:20}}>thank you</Text>
           
         </View>
