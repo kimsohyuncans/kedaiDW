@@ -21,7 +21,7 @@ class WelcomePage extends Component {
                     <TouchableOpacity style={{width:30,backgroundColor:'white',marginTop:10,backgroundColor:"#BAB1AC",width:'60%',height:35,borderRadius:15,alignItems:'center'}}
                     // onPress={() => this.props.getId_transactions(this.state.table_number)}
                     onPress={() => {
-                        // this.props.getId_transactions(this.state.table_number)
+                        this.props.getId_transactions(this.state.table_number)
                         this.props.navigation.navigate('SelectFood')
                         
                     }}
