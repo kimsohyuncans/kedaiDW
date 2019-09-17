@@ -64,6 +64,11 @@ export default function transaction(state = initialState,action){
                 is_paid : false,
                 msg : action.payload.data
             }
+        case "time":
+            return {
+                ...state,
+                finished_time : action.payload
+            }
         default :
             return state
     }

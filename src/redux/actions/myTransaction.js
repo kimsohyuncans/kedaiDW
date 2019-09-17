@@ -28,3 +28,8 @@ export const completeMyTf = (data) => ({
     type: 'completeMyTf',
     payload : axios.patch("http://localhost:8080/api/v1/complete_transaction",data)
 })
+
+export const time = (data) => ({
+    type : 'time',
+    payload : data
+})

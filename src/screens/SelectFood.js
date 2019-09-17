@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {View, FlatList, Text, Alert,Modal,ScrollView,Button,TouchableHighlight} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler'
-import {Spinner, Content, Footer, List, ListItem, Container,Tab, Tabs, ScrollableTab,Left,Body,Right,Thumbnail} from 'native-base';
+import {Spinner, Content, Footer, List, ListItem, Container,Tab, Tabs, Header,ScrollableTab,Left,Body,Right,Thumbnail} from 'native-base';
 import * as getMenuActions from '../redux/actions/getlistmenu';
 import * as orderActions from '../redux/actions/getlistorder';
 import * as transactionActions from '../redux/actions/myTransaction'
@@ -13,11 +13,14 @@ class SelectFood extends Component {
     this.state = {
       orders: new Array(),
       modalVisible: false,
+      time : 0
     };
     this.choose = this.choose.bind(this);
     this.confirm = this.confirm.bind(this);
     this.cancel = this.cancel.bind(this);
     this.orderStatus = this.orderStatus.bind(this)
+    
+    setInterval(() => this.setState({time : this.state.time + 1}),1000)
     
   }
 
@@ -83,8 +86,12 @@ class SelectFood extends Component {
             this.setState({
               orders : []
             })
-            // setTimeout( () => this.props.changeStatus(this.props.transaction.id),15000)
-            alert('your order confirmed, please check bill to see your details order')
+            setTimeout( () => this.props.changeStatus(this.props.transaction.id),20000)
+            
+            this.setModalVisible()
+            await alert('please wait your order come')
+            
+            
           },
         },
         {
@@ -151,7 +158,7 @@ class SelectFood extends Component {
             <Tabs>
               {this.props.listmenu.data.map((item,i) => (
                 <Tab heading={item.name} key={i} tabStyle={{backgroundColor:'#0275d8'}} activeTabStyle={{backgroundColor:'#0275d8'}} style={{flex:1}}>
-                  <View style={{flex:1,backgroundColor:'white'}}>
+                  <View style={{flex:1,backgroundColor:'#ececec'}}>
                     <ScrollView>
                       <List>
                         <FlatList
@@ -160,7 +167,7 @@ class SelectFood extends Component {
                         extraData={this.props.listmenu}
                         renderItem={ ({item}) => (
 
-                          <TouchableOpacity style={{borderWidth:2,borderColor:'#e0e0e0',height:70,width:'100%',marginBottom:10}} onPress={() => this.choose(item,this.props.transaction.id)} key={item.id}>
+                          <TouchableOpacity style={{borderWidth:2,borderColor:'#e0e0e0',height:70,width:'100%',marginBottom:10,backgroundColor:'white'}} onPress={() => this.choose(item,this.props.transaction.id)} key={item.id}>
 
                             <ListItem thumbnail>
                               <Left>
@@ -198,7 +205,7 @@ class SelectFood extends Component {
           </Content>
           <Footer style={{height: 200, flexDirection: 'row',backgroundColor:'white'}}>
             <View style={{width: '70%',backgroundColor:'#292b2c'}}>
-              <Text style={{color: 'white', marginLeft: '35%'}}>Order List table {/*this.props.transaction.table_number8*/} </Text>
+              <Text style={{color: 'white', marginLeft: '35%'}}>Order List table {this.props.transaction.table_number} </Text>
               <View style={{borderBottomColor: 'gray',borderBottomWidth: 1,flexDirection: 'row',justifyContent: 'space-between',marginTop: 20,}}>
                 <View style={{flex: 1, alignItems: 'flex-start'}}>
                   <Text style={{color: 'white', marginLeft: 10}}>Name</Text>
@@ -342,7 +349,7 @@ class SelectFood extends Component {
                   <View key={index} style={{borderBottomColor: 'gray',flexDirection: 'row',justifyContent: 'space-between'}}>
                   
                     <View style={{flex: 1, alignItems: 'flex-start'}}>
-                      {item.status != false ? (<Text style={{color: '#d9534f', marginLeft: 10}}>Waiting</Text>) : (<Text style={{color: '#0baa56', marginLeft: 10}}>Sent</Text>)}
+                      {item.status == false ? (<Text style={{color: '#d9534f', marginLeft: 10}}>Waiting</Text>) : (<Text style={{color: '#0baa56', marginLeft: 10}}>Sent</Text>)}
                     </View>
                     <View style={{flex: 1, alignItems: 'center'}}>
                       <Text style={{color: 'gray'}}>{item.menus_info.name} x{item.qyt}</Text>
@@ -429,6 +436,7 @@ class SelectFood extends Component {
                 
               <TouchableHighlight style={{width:'80%',height:50,marginTop:4,alignSelf:'center',justifyContent:'center',alignItems: 'center',backgroundColor:'#0baa56'}}
               onPress={async () => {
+                this.props.time(this.state.time)
                 this.props.completeMyTf(this.props.transaction)
                 await this.setState({modalVisible:false})
                 this.props.navigation.navigate('Is_Paid')
@@ -467,7 +475,8 @@ const mapDispatchtoProps = dispatch => {
     myOrder : data => dispatch(orderActions.myOrder(data)),
     total : data => dispatch(transactionActions.subTotal(data)),
     completeMyTf : data => dispatch(transactionActions.completeMyTf(data)),
-    changeStatus: () => dispatch(orderActions.changeStatus())
+    changeStatus: (data) => dispatch(orderActions.changeStatus(data)),
+    time : data => dispatch(transactionActions.time(data))
   };
 };
 
